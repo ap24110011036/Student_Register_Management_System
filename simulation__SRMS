@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+struct Customer {
+    char name[50];
+    int accNo;
+    int balance;
+    int withdraw;
+};
+
+struct Customer queue[MAX];
+int front = -1, rear = -1;
+
+void enqueue() {
+    if (rear == MAX - 1) {
+        printf("Queue Overflow! Cannot add more customers.\n");
+        return;
+    }
+    struct Customer c;
+    printf("\nEnter Customer Name: ");
+    scanf("%s", c.name);
+
+    printf("Enter Account Number: ");
+    scanf("%d", &c.accNo);
+
+    printf("Enter Account Balance: ");
+    scanf("%d", &c.balance);
+
+    printf("Enter Withdrawal Amount: ");
+    scanf("%d", &c.withdraw);
+
+    if (front == -1) front = 0;
+    queue[++rear] = c;
+
+    printf("Customer added to queue.\n");
+}
+
+void dequeue() {
+    if (front == -1 || front > rear) {
+        printf("Queue Underflow! No customers to process.\n");
+        return;
+    }
+
+    struct Customer c = queue[front++];
+
+    printf("\nProcessing Customer: %s\n", c.name);
+
+    if (c.withdraw <= c.balance) {
+        c.balance -= c.withdraw;
+        printf("Withdrawal successful!\n");
+        printf("Remaining Balance: %d\n", c.balance);
+    } else {
+        printf("Insufficient balance! Withdrawal denied.\n");
+    }
+}
+
+void display() {
+    if (front == -1 || front > rear) {
+        printf("Queue is empty.\n");
+        return;
+    }
+
+    printf("\nCustomers in Queue:\n");
+    for (int i = front; i <= rear; i++) {
+        printf("%d. %s (Acc: %d, Withdraw: %d)\n",
+               i - front + 1,
+               queue[i].name,
+               queue[i].accNo,
+               queue[i].withdraw);
+    }
+}
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n===== ATM Queue Simulation =====\n");
+        printf("1. Add Customer\n");
+        printf("2. Process Customer\n");
+        printf("3. Display Queue\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: enqueue(); break;
+            case 2: dequeue(); break;
+            case 3: display(); break;
+            case 4: printf("Exiting..."); return 0;
+            default: printf("Invalid choice!\n");
+        }
+    }
+}
